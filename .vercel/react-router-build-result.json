@@ -1,0 +1,706 @@
+{
+  "buildManifest": {
+    "serverBundles": {
+      "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0": {
+        "id": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+        "file": "build/server/nodejs_eyJydW50aW1lIjoibm9kZWpzIn0/index.js",
+        "config": {
+          "runtime": "nodejs"
+        }
+      }
+    },
+    "routeIdToServerBundleId": {
+      "page": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "account/logout/page": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "account/signin/page": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "account/signup/page": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "associacao/page": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "associacao/nova/page": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "eventos/page": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "eventos/novo/page": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "eventos/[eventId]/page": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "eventos/[eventId]/editar/page": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "events/[eventId]/page": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "financeiro/page": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "fornecedores/page": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "fornecedores/novo/page": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "fornecedores/[supplierId]/editar/page": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "hackathons/page": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "hackathons/[eventId]/page": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "programas/page": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "programas/novo/page": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "programas/[eventId]/page": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "programas/[eventId]/doadores/[donorKey]/page": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "programas/[eventId]/editar/page": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "programas/[eventId]/investidores/[donorKey]/page": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "programas/[programId]/eventos/[eventId]/page": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "projetos/page": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "projetos/novo/page": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "projetos/[projectId]/page": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "projetos/[projectId]/editar/page": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "publicacoes/page": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "sair/page": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "voluntariado/page": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "__create/not-found": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0"
+    },
+    "routes": {
+      "root": {
+        "id": "root",
+        "file": "src/app/root.tsx",
+        "path": "",
+        "config": {}
+      },
+      "page": {
+        "id": "page",
+        "parentId": "root",
+        "file": "src/app/page.jsx",
+        "index": true,
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "account/logout/page": {
+        "id": "account/logout/page",
+        "parentId": "root",
+        "file": "src/app/account/logout/page.jsx",
+        "path": "account/logout",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "account/signin/page": {
+        "id": "account/signin/page",
+        "parentId": "root",
+        "file": "src/app/account/signin/page.jsx",
+        "path": "account/signin",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "account/signup/page": {
+        "id": "account/signup/page",
+        "parentId": "root",
+        "file": "src/app/account/signup/page.jsx",
+        "path": "account/signup",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "associacao/page": {
+        "id": "associacao/page",
+        "parentId": "root",
+        "file": "src/app/associacao/page.jsx",
+        "path": "associacao",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "associacao/nova/page": {
+        "id": "associacao/nova/page",
+        "parentId": "root",
+        "file": "src/app/associacao/nova/page.jsx",
+        "path": "associacao/nova",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "eventos/page": {
+        "id": "eventos/page",
+        "parentId": "root",
+        "file": "src/app/eventos/page.jsx",
+        "path": "eventos",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "eventos/novo/page": {
+        "id": "eventos/novo/page",
+        "parentId": "root",
+        "file": "src/app/eventos/novo/page.jsx",
+        "path": "eventos/novo",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "eventos/[eventId]/page": {
+        "id": "eventos/[eventId]/page",
+        "parentId": "root",
+        "file": "src/app/eventos/[eventId]/page.jsx",
+        "path": "eventos/:eventId",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "eventos/[eventId]/editar/page": {
+        "id": "eventos/[eventId]/editar/page",
+        "parentId": "root",
+        "file": "src/app/eventos/[eventId]/editar/page.jsx",
+        "path": "eventos/:eventId/editar",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "events/[eventId]/page": {
+        "id": "events/[eventId]/page",
+        "parentId": "root",
+        "file": "src/app/events/[eventId]/page.jsx",
+        "path": "events/:eventId",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "financeiro/page": {
+        "id": "financeiro/page",
+        "parentId": "root",
+        "file": "src/app/financeiro/page.jsx",
+        "path": "financeiro",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "fornecedores/page": {
+        "id": "fornecedores/page",
+        "parentId": "root",
+        "file": "src/app/fornecedores/page.jsx",
+        "path": "fornecedores",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "fornecedores/novo/page": {
+        "id": "fornecedores/novo/page",
+        "parentId": "root",
+        "file": "src/app/fornecedores/novo/page.jsx",
+        "path": "fornecedores/novo",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "fornecedores/[supplierId]/editar/page": {
+        "id": "fornecedores/[supplierId]/editar/page",
+        "parentId": "root",
+        "file": "src/app/fornecedores/[supplierId]/editar/page.jsx",
+        "path": "fornecedores/:supplierId/editar",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "hackathons/page": {
+        "id": "hackathons/page",
+        "parentId": "root",
+        "file": "src/app/hackathons/page.jsx",
+        "path": "hackathons",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "hackathons/[eventId]/page": {
+        "id": "hackathons/[eventId]/page",
+        "parentId": "root",
+        "file": "src/app/hackathons/[eventId]/page.jsx",
+        "path": "hackathons/:eventId",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "programas/page": {
+        "id": "programas/page",
+        "parentId": "root",
+        "file": "src/app/programas/page.jsx",
+        "path": "programas",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "programas/novo/page": {
+        "id": "programas/novo/page",
+        "parentId": "root",
+        "file": "src/app/programas/novo/page.jsx",
+        "path": "programas/novo",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "programas/[eventId]/page": {
+        "id": "programas/[eventId]/page",
+        "parentId": "root",
+        "file": "src/app/programas/[eventId]/page.jsx",
+        "path": "programas/:eventId",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "programas/[eventId]/doadores/[donorKey]/page": {
+        "id": "programas/[eventId]/doadores/[donorKey]/page",
+        "parentId": "root",
+        "file": "src/app/programas/[eventId]/doadores/[donorKey]/page.jsx",
+        "path": "programas/:eventId/doadores/:donorKey",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "programas/[eventId]/editar/page": {
+        "id": "programas/[eventId]/editar/page",
+        "parentId": "root",
+        "file": "src/app/programas/[eventId]/editar/page.jsx",
+        "path": "programas/:eventId/editar",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "programas/[eventId]/investidores/[donorKey]/page": {
+        "id": "programas/[eventId]/investidores/[donorKey]/page",
+        "parentId": "root",
+        "file": "src/app/programas/[eventId]/investidores/[donorKey]/page.jsx",
+        "path": "programas/:eventId/investidores/:donorKey",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "programas/[programId]/eventos/[eventId]/page": {
+        "id": "programas/[programId]/eventos/[eventId]/page",
+        "parentId": "root",
+        "file": "src/app/programas/[programId]/eventos/[eventId]/page.jsx",
+        "path": "programas/:programId/eventos/:eventId",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "projetos/page": {
+        "id": "projetos/page",
+        "parentId": "root",
+        "file": "src/app/projetos/page.jsx",
+        "path": "projetos",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "projetos/novo/page": {
+        "id": "projetos/novo/page",
+        "parentId": "root",
+        "file": "src/app/projetos/novo/page.jsx",
+        "path": "projetos/novo",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "projetos/[projectId]/page": {
+        "id": "projetos/[projectId]/page",
+        "parentId": "root",
+        "file": "src/app/projetos/[projectId]/page.jsx",
+        "path": "projetos/:projectId",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "projetos/[projectId]/editar/page": {
+        "id": "projetos/[projectId]/editar/page",
+        "parentId": "root",
+        "file": "src/app/projetos/[projectId]/editar/page.jsx",
+        "path": "projetos/:projectId/editar",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "publicacoes/page": {
+        "id": "publicacoes/page",
+        "parentId": "root",
+        "file": "src/app/publicacoes/page.jsx",
+        "path": "publicacoes",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "sair/page": {
+        "id": "sair/page",
+        "parentId": "root",
+        "file": "src/app/sair/page.jsx",
+        "path": "sair",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "voluntariado/page": {
+        "id": "voluntariado/page",
+        "parentId": "root",
+        "file": "src/app/voluntariado/page.jsx",
+        "path": "voluntariado",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "__create/not-found": {
+        "id": "__create/not-found",
+        "parentId": "root",
+        "file": "src/app/__create/not-found.tsx",
+        "path": "*?",
+        "config": {
+          "runtime": "nodejs"
+        }
+      }
+    }
+  },
+  "reactRouterConfig": {
+    "appDirectory": "C:/Projetos/isow_admin/src/app",
+    "basename": "/",
+    "buildDirectory": "C:/Projetos/isow_admin/build",
+    "future": {
+      "unstable_optimizeDeps": false,
+      "unstable_subResourceIntegrity": false,
+      "unstable_trailingSlashAwareDataRequests": false,
+      "unstable_previewServerPrerendering": false,
+      "v8_middleware": false,
+      "v8_splitRouteModules": false,
+      "v8_viteEnvironmentApi": false
+    },
+    "routes": {
+      "root": {
+        "id": "root",
+        "file": "root.tsx",
+        "path": ""
+      },
+      "page": {
+        "id": "page",
+        "parentId": "root",
+        "file": "./page.jsx",
+        "index": true
+      },
+      "account/logout/page": {
+        "id": "account/logout/page",
+        "parentId": "root",
+        "file": "./account/logout/page.jsx",
+        "path": "account/logout"
+      },
+      "account/signin/page": {
+        "id": "account/signin/page",
+        "parentId": "root",
+        "file": "./account/signin/page.jsx",
+        "path": "account/signin"
+      },
+      "account/signup/page": {
+        "id": "account/signup/page",
+        "parentId": "root",
+        "file": "./account/signup/page.jsx",
+        "path": "account/signup"
+      },
+      "associacao/page": {
+        "id": "associacao/page",
+        "parentId": "root",
+        "file": "./associacao/page.jsx",
+        "path": "associacao"
+      },
+      "associacao/nova/page": {
+        "id": "associacao/nova/page",
+        "parentId": "root",
+        "file": "./associacao/nova/page.jsx",
+        "path": "associacao/nova"
+      },
+      "eventos/page": {
+        "id": "eventos/page",
+        "parentId": "root",
+        "file": "./eventos/page.jsx",
+        "path": "eventos"
+      },
+      "eventos/novo/page": {
+        "id": "eventos/novo/page",
+        "parentId": "root",
+        "file": "./eventos/novo/page.jsx",
+        "path": "eventos/novo"
+      },
+      "eventos/[eventId]/page": {
+        "id": "eventos/[eventId]/page",
+        "parentId": "root",
+        "file": "./eventos/[eventId]/page.jsx",
+        "path": "eventos/:eventId"
+      },
+      "eventos/[eventId]/editar/page": {
+        "id": "eventos/[eventId]/editar/page",
+        "parentId": "root",
+        "file": "./eventos/[eventId]/editar/page.jsx",
+        "path": "eventos/:eventId/editar"
+      },
+      "events/[eventId]/page": {
+        "id": "events/[eventId]/page",
+        "parentId": "root",
+        "file": "./events/[eventId]/page.jsx",
+        "path": "events/:eventId"
+      },
+      "financeiro/page": {
+        "id": "financeiro/page",
+        "parentId": "root",
+        "file": "./financeiro/page.jsx",
+        "path": "financeiro"
+      },
+      "fornecedores/page": {
+        "id": "fornecedores/page",
+        "parentId": "root",
+        "file": "./fornecedores/page.jsx",
+        "path": "fornecedores"
+      },
+      "fornecedores/novo/page": {
+        "id": "fornecedores/novo/page",
+        "parentId": "root",
+        "file": "./fornecedores/novo/page.jsx",
+        "path": "fornecedores/novo"
+      },
+      "fornecedores/[supplierId]/editar/page": {
+        "id": "fornecedores/[supplierId]/editar/page",
+        "parentId": "root",
+        "file": "./fornecedores/[supplierId]/editar/page.jsx",
+        "path": "fornecedores/:supplierId/editar"
+      },
+      "hackathons/page": {
+        "id": "hackathons/page",
+        "parentId": "root",
+        "file": "./hackathons/page.jsx",
+        "path": "hackathons"
+      },
+      "hackathons/[eventId]/page": {
+        "id": "hackathons/[eventId]/page",
+        "parentId": "root",
+        "file": "./hackathons/[eventId]/page.jsx",
+        "path": "hackathons/:eventId"
+      },
+      "programas/page": {
+        "id": "programas/page",
+        "parentId": "root",
+        "file": "./programas/page.jsx",
+        "path": "programas"
+      },
+      "programas/novo/page": {
+        "id": "programas/novo/page",
+        "parentId": "root",
+        "file": "./programas/novo/page.jsx",
+        "path": "programas/novo"
+      },
+      "programas/[eventId]/page": {
+        "id": "programas/[eventId]/page",
+        "parentId": "root",
+        "file": "./programas/[eventId]/page.jsx",
+        "path": "programas/:eventId"
+      },
+      "programas/[eventId]/doadores/[donorKey]/page": {
+        "id": "programas/[eventId]/doadores/[donorKey]/page",
+        "parentId": "root",
+        "file": "./programas/[eventId]/doadores/[donorKey]/page.jsx",
+        "path": "programas/:eventId/doadores/:donorKey"
+      },
+      "programas/[eventId]/editar/page": {
+        "id": "programas/[eventId]/editar/page",
+        "parentId": "root",
+        "file": "./programas/[eventId]/editar/page.jsx",
+        "path": "programas/:eventId/editar"
+      },
+      "programas/[eventId]/investidores/[donorKey]/page": {
+        "id": "programas/[eventId]/investidores/[donorKey]/page",
+        "parentId": "root",
+        "file": "./programas/[eventId]/investidores/[donorKey]/page.jsx",
+        "path": "programas/:eventId/investidores/:donorKey"
+      },
+      "programas/[programId]/eventos/[eventId]/page": {
+        "id": "programas/[programId]/eventos/[eventId]/page",
+        "parentId": "root",
+        "file": "./programas/[programId]/eventos/[eventId]/page.jsx",
+        "path": "programas/:programId/eventos/:eventId"
+      },
+      "projetos/page": {
+        "id": "projetos/page",
+        "parentId": "root",
+        "file": "./projetos/page.jsx",
+        "path": "projetos"
+      },
+      "projetos/novo/page": {
+        "id": "projetos/novo/page",
+        "parentId": "root",
+        "file": "./projetos/novo/page.jsx",
+        "path": "projetos/novo"
+      },
+      "projetos/[projectId]/page": {
+        "id": "projetos/[projectId]/page",
+        "parentId": "root",
+        "file": "./projetos/[projectId]/page.jsx",
+        "path": "projetos/:projectId"
+      },
+      "projetos/[projectId]/editar/page": {
+        "id": "projetos/[projectId]/editar/page",
+        "parentId": "root",
+        "file": "./projetos/[projectId]/editar/page.jsx",
+        "path": "projetos/:projectId/editar"
+      },
+      "publicacoes/page": {
+        "id": "publicacoes/page",
+        "parentId": "root",
+        "file": "./publicacoes/page.jsx",
+        "path": "publicacoes"
+      },
+      "sair/page": {
+        "id": "sair/page",
+        "parentId": "root",
+        "file": "./sair/page.jsx",
+        "path": "sair"
+      },
+      "voluntariado/page": {
+        "id": "voluntariado/page",
+        "parentId": "root",
+        "file": "./voluntariado/page.jsx",
+        "path": "voluntariado"
+      },
+      "__create/not-found": {
+        "id": "__create/not-found",
+        "parentId": "root",
+        "file": "./__create/not-found.tsx",
+        "path": "*?"
+      }
+    },
+    "routeDiscovery": {
+      "mode": "lazy",
+      "manifestPath": "/__manifest"
+    },
+    "serverBuildFile": "index.js",
+    "serverModuleFormat": "esm",
+    "ssr": true,
+    "allowedActionOrigins": false,
+    "unstable_routeConfig": [
+      {
+        "id": "root",
+        "path": "",
+        "file": "root.tsx",
+        "children": [
+          {
+            "file": "./page.jsx",
+            "index": true
+          },
+          {
+            "file": "./account/logout/page.jsx",
+            "path": "account/logout"
+          },
+          {
+            "file": "./account/signin/page.jsx",
+            "path": "account/signin"
+          },
+          {
+            "file": "./account/signup/page.jsx",
+            "path": "account/signup"
+          },
+          {
+            "file": "./associacao/page.jsx",
+            "path": "associacao"
+          },
+          {
+            "file": "./associacao/nova/page.jsx",
+            "path": "associacao/nova"
+          },
+          {
+            "file": "./eventos/page.jsx",
+            "path": "eventos"
+          },
+          {
+            "file": "./eventos/novo/page.jsx",
+            "path": "eventos/novo"
+          },
+          {
+            "file": "./eventos/[eventId]/page.jsx",
+            "path": "eventos/:eventId"
+          },
+          {
+            "file": "./eventos/[eventId]/editar/page.jsx",
+            "path": "eventos/:eventId/editar"
+          },
+          {
+            "file": "./events/[eventId]/page.jsx",
+            "path": "events/:eventId"
+          },
+          {
+            "file": "./financeiro/page.jsx",
+            "path": "financeiro"
+          },
+          {
+            "file": "./fornecedores/page.jsx",
+            "path": "fornecedores"
+          },
+          {
+            "file": "./fornecedores/novo/page.jsx",
+            "path": "fornecedores/novo"
+          },
+          {
+            "file": "./fornecedores/[supplierId]/editar/page.jsx",
+            "path": "fornecedores/:supplierId/editar"
+          },
+          {
+            "file": "./hackathons/page.jsx",
+            "path": "hackathons"
+          },
+          {
+            "file": "./hackathons/[eventId]/page.jsx",
+            "path": "hackathons/:eventId"
+          },
+          {
+            "file": "./programas/page.jsx",
+            "path": "programas"
+          },
+          {
+            "file": "./programas/novo/page.jsx",
+            "path": "programas/novo"
+          },
+          {
+            "file": "./programas/[eventId]/page.jsx",
+            "path": "programas/:eventId"
+          },
+          {
+            "file": "./programas/[eventId]/doadores/[donorKey]/page.jsx",
+            "path": "programas/:eventId/doadores/:donorKey"
+          },
+          {
+            "file": "./programas/[eventId]/editar/page.jsx",
+            "path": "programas/:eventId/editar"
+          },
+          {
+            "file": "./programas/[eventId]/investidores/[donorKey]/page.jsx",
+            "path": "programas/:eventId/investidores/:donorKey"
+          },
+          {
+            "file": "./programas/[programId]/eventos/[eventId]/page.jsx",
+            "path": "programas/:programId/eventos/:eventId"
+          },
+          {
+            "file": "./projetos/page.jsx",
+            "path": "projetos"
+          },
+          {
+            "file": "./projetos/novo/page.jsx",
+            "path": "projetos/novo"
+          },
+          {
+            "file": "./projetos/[projectId]/page.jsx",
+            "path": "projetos/:projectId"
+          },
+          {
+            "file": "./projetos/[projectId]/editar/page.jsx",
+            "path": "projetos/:projectId/editar"
+          },
+          {
+            "file": "./publicacoes/page.jsx",
+            "path": "publicacoes"
+          },
+          {
+            "file": "./sair/page.jsx",
+            "path": "sair"
+          },
+          {
+            "file": "./voluntariado/page.jsx",
+            "path": "voluntariado"
+          },
+          {
+            "file": "./__create/not-found.tsx",
+            "path": "*?"
+          }
+        ]
+      }
+    ]
+  },
+  "viteConfig": {
+    "build": {
+      "assetsDir": "assets"
+    }
+  }
+}

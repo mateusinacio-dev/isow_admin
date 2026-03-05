@@ -1,6 +1,6 @@
-# Plano de Ação: Criar README.md do projeto
+# Plano de Ação: Configurar Deploy na Vercel
 
-- [x] Analisar a estrutura do projeto (package.json, src/).
-- [x] Identificar o objetivo do projeto e as tecnologias (React Router, Vite, Tailwind, etc).
-- [x] Escrever o arquivo `README.md` completo em pt-br.
-- [x] Revisar as informações do projeto antes de concluir.
+- [x] Instalar o pacote `@vercel/react-router` e configurar o adaptador.
+- [x] Atualizar o arquivo `react-router.config.ts` com o `vercelPreset`.
+- [x] Criar o arquivo `vercel.json` na raiz do projeto.
+- [x] Validar o build de produção via `bun run build`.

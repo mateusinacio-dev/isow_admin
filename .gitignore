@@ -47,3 +47,7 @@ vite.config.js.timestamp-*
 
 # Bun (Opcional gerados locais)
 .bun/
+
+# ide
+tasks/todo.md
+tasks
