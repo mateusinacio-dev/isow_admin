@@ -1,0 +1,49 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+bun-error.log
+
+# Instalações de dependências
+node_modules/
+
+# Builds e Distribuição (React Router / Vite)
+dist/
+dist-ssr/
+build/
+public/build/
+.react-router/
+
+# Ambiente
+.env
+.env.*
+!.env.example
+
+# Arquivos de configurações locais
+*.local
+
+# Editor e Sistema
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Vite
+vite.config.ts.timestamp-*
+vite.config.js.timestamp-*
+
+# Ferramentas de Teste
+/coverage/
+
+# Bun (Opcional gerados locais)
+.bun/
