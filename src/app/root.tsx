@@ -173,9 +173,8 @@ function InternalErrorBoundary({ error: errorArg }: Route.ErrorBoundaryProps) {
     <>
       {!isInIframe() && (
         <div
-          className={`fixed bottom-4 left-1/2 transform -translate-x-1/2 max-w-md z-50 transition-all duration-500 ease-out ${
-            isOpen ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
-          }`}
+          className={`fixed bottom-4 left-1/2 transform -translate-x-1/2 max-w-md z-50 transition-all duration-500 ease-out ${isOpen ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
+            }`}
           style={{ width: '75vw' }}
         >
           <div
@@ -183,9 +182,9 @@ function InternalErrorBoundary({ error: errorArg }: Route.ErrorBoundaryProps) {
             style={
               scaleFactor !== 1
                 ? ({
-                    transform: `scale(${scaleFactor})`,
-                    transformOrigin: 'bottom center',
-                  } as CSSProperties)
+                  transform: `scale(${scaleFactor})`,
+                  transformOrigin: 'bottom center',
+                } as CSSProperties)
                 : undefined
             }
           >
@@ -437,8 +436,12 @@ export function Layout({ children }: { children: ReactNode }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
-        <script type="module" src="/src/__create/dev-error-overlay.js"></script>
-        <link rel="icon" href="/src/__create/favicon.png" />
+        {import.meta.env.DEV && (
+          <script type="module" src="/src/__create/dev-error-overlay.js" />
+        )}
+        {import.meta.env.DEV && (
+          <link rel="icon" href="/src/__create/favicon.png" />
+        )}
         {LoadFontsSSR ? <LoadFontsSSR /> : null}
       </head>
       <body>
