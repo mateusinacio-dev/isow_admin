@@ -32,7 +32,7 @@ export default defineConfig({
     nextPublicProcessEnv(),
     reactRouterHonoServer({
       serverEntryPoint: './__create/index.ts',
-      runtime: 'node',
+      runtime: 'aws',
     }),
     babel({
       include: ['src/**/*.{js,jsx,ts,tsx}'], // or RegExp: /src\/.*\.[tj]sx?$/
