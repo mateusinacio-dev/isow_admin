@@ -11,7 +11,9 @@ import { cors } from 'hono/cors';
 import { proxy } from 'hono/proxy';
 import { bodyLimit } from 'hono/body-limit';
 import { requestId } from 'hono/request-id';
-import { createHonoServer } from 'react-router-hono-server/aws-lambda';
+import { createRequestHandler } from 'react-router';
+// @ts-expect-error - virtual module provided by React Router at build time
+import * as build from 'virtual:react-router/server-build';
 import { serializeError } from 'serialize-error';
 import ws from 'ws';
 import NeonAdapter from './adapter';
@@ -250,10 +252,8 @@ app.use('/api/auth/*', async (c, next) => {
 });
 app.route(API_BASENAME, api);
 
-const serverPromise = createHonoServer({
-  app,
-  invokeMode: 'default',
-  defaultLogger: false,
-});
+// Mount React Router as the final fallback handler
+const handler = createRequestHandler(build);
+app.mount('/', (req) => handler(req));
 
-export default serverPromise;
+export default app.fetch;
