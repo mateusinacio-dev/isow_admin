@@ -299,15 +299,22 @@ export function ComplianceSection({
     setUploadedFile(null);
 
     if (!file) {
-      // User cleared the file — hide fields, reset state
-      setFieldsRevealed(false);
-      setAiMessage(null);
-      setAiMessageType("info");
+      // Se há documento existente, mantém campos visíveis com dados anteriores
+      if (activeComplianceItem?.fileUrl) {
+        setAiMessage(null);
+        setAiMessageType("info");
+      } else {
+        // Sem documento anterior: esconde campos e reseta
+        setFieldsRevealed(false);
+        setAiMessage(null);
+        setAiMessageType("info");
+      }
       return;
     }
 
-    // Automatically trigger extraction
+    // Automaticamente dispara extração com novo arquivo
     runExtraction(file);
+
   };
 
   const handleDocumentSubmit = async () => {
