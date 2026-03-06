@@ -256,4 +256,8 @@ app.route(API_BASENAME, api);
 const handler = createRequestHandler(build);
 app.mount('/', (req) => handler(req));
 
-export default app.fetch;
+// Para desenvolvimento local com Vite, o dev-server do Hono espera 'export default app'
+// Nas funções serverless (Vercel), a assinatura export default (...) precisa ser app.fetch.
+// Mas o reactRouterHonoServer pode lidar com app diretamente. 
+// Vamos exportar app em vez de app.fetch, pois parece que é o esperado pelo reactRouterHonoServer.
+export default process.env.NODE_ENV === 'production' ? app.fetch : app;
