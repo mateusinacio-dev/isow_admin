@@ -185,8 +185,7 @@ export function computeComplianceSummary({ organization, documents, now }) {
       item.expiresAt = toDateOnlyISO(doc.expiresAt);
     }
 
-    // CNPJ: aviso de mismatch no tooltip, mas NÃO altera o status
-    // (CNPJ_CARD não tem vencimento — quando enviado, sempre OK)
+    // CNPJ: mismatch gera Atenção (exibido de forma chamativa no popup ao abrir)
     if (req.type === COMPLIANCE_DOC_TYPES.CNPJ_CARD) {
       const orgCnpj = normalizeDigits(organization?.legalIdNumber);
       const docCnpj = normalizeDigits(doc?.meta?.cnpj);
@@ -194,7 +193,7 @@ export function computeComplianceSummary({ organization, documents, now }) {
         item.warnings.push(
           "CNPJ do cartão não bate com o CNPJ cadastrado (confira os dados).",
         );
-        // Não seta WARNING: cartão CNPJ não vence, status = OK quando enviado
+        item.status = "WARNING";
       }
     }
 

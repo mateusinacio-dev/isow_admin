@@ -479,9 +479,7 @@ export function ComplianceSection({
               </div>
 
               <div className="flex items-center gap-3">
-                <div title={(activeComplianceItem?.warnings || []).join("\n")}>
-                  <StatusPill status={activeComplianceItem?.status || "OK"} />
-                </div>
+                <StatusPill status={activeComplianceItem?.status || "OK"} />
                 <button
                   type="button"
                   className="h-10 px-3 rounded-lg border border-[#E6E6E6] text-sm font-inter hover:bg-[#F9FAFB] disabled:opacity-60"
@@ -493,6 +491,24 @@ export function ComplianceSection({
               </div>
             </div>
 
+            {/* Banner de warnings — aparece imediatamente quando há motivo de Atenção */}
+            {activeComplianceItem?.warnings?.length > 0 ? (
+              <div className="mt-3 flex items-start gap-3 bg-amber-50 border border-amber-300 rounded-lg p-3">
+                <svg className="shrink-0 mt-0.5 h-5 w-5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                </svg>
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-semibold font-inter text-amber-800">
+                    Atenção — por que este documento está marcado
+                  </div>
+                  <ul className="mt-1 space-y-0.5">
+                    {activeComplianceItem.warnings.map((w, i) => (
+                      <li key={i} className="text-xs font-inter text-amber-700">• {w}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            ) : null}
             {activeComplianceItem?.fileUrl ? (
               <div className="mt-3 flex items-start gap-3 bg-blue-50 border border-blue-200 rounded-lg p-3">
                 <svg className="shrink-0 mt-0.5 h-4 w-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

@@ -66,9 +66,7 @@ export function ComplianceStatusGrid({ complianceItems, onItemClick }) {
                   {sub}
                 </div>
               </div>
-              <div title={(item.warnings || []).join("\n")}>
-                <StatusPill status={item.status} />
-              </div>
+              <StatusPill status={item.status} />
             </div>
           );
         })}
