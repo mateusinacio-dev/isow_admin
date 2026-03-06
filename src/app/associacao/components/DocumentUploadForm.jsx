@@ -12,15 +12,14 @@ export function DocumentUploadForm({
   docRequirements,
   fieldErrors,
   showValidation,
-  // NEW (optional): allow using this form inside a popup and lock the doc type
   title,
   showHeader = true,
   showDocTypeSelect = true,
   lockedDocTypeLabel,
-  // NEW: controls whether extra fields are revealed
   fieldsRevealed = true,
   aiMessage = null,
-  aiMessageType = "info", // "info" | "error"
+  aiMessageType = "info",
+  hasExistingFile = false,
 }) {
   const baseClass = "mt-1 w-full h-10 px-3 rounded-lg border";
 
@@ -51,7 +50,8 @@ export function DocumentUploadForm({
   const hint = docRequirements?.hint || null;
   const showHint = Boolean(hint);
 
-  const submitReady = Boolean(docFile && docForm.docType && fieldsRevealed);
+  // Pode enviar: novo arquivo selecionado OU documento j\u00e1 existente (s\u00f3 atualiza metadados)
+  const submitReady = Boolean((docFile || hasExistingFile) && docForm.docType && fieldsRevealed);
 
   const submitDisabled = isPending || uploading || extracting || !submitReady;
 
@@ -67,30 +67,25 @@ export function DocumentUploadForm({
   const fiscalYearError = showValidation ? fieldErrors?.fiscalYear : null;
   const cnpjError = showValidation ? fieldErrors?.cnpj : null;
 
-  const docTypeClass = `${baseClass} ${
-    docTypeError ? "border-red-400" : "border-[#E6E6E6]"
-  }`;
+  const docTypeClass = `${baseClass} ${docTypeError ? "border-red-400" : "border-[#E6E6E6]"
+    }`;
 
   const descriptionClass = `${baseClass} border-[#E6E6E6]`;
 
   const registeredAtClass = `${baseClass} border-[#E6E6E6]`;
   const issuedAtClass = `${baseClass} border-[#E6E6E6]`;
 
-  const expiresAtClass = `${baseClass} ${
-    expiresAtError ? "border-red-400" : "border-[#E6E6E6]"
-  }`;
+  const expiresAtClass = `${baseClass} ${expiresAtError ? "border-red-400" : "border-[#E6E6E6]"
+    }`;
 
-  const mandateEndsAtClass = `${baseClass} ${
-    mandateEndsAtError ? "border-red-400" : "border-[#E6E6E6]"
-  }`;
+  const mandateEndsAtClass = `${baseClass} ${mandateEndsAtError ? "border-red-400" : "border-[#E6E6E6]"
+    }`;
 
-  const fiscalYearClass = `${baseClass} ${
-    fiscalYearError ? "border-red-400" : "border-[#E6E6E6]"
-  }`;
+  const fiscalYearClass = `${baseClass} ${fiscalYearError ? "border-red-400" : "border-[#E6E6E6]"
+    }`;
 
-  const cnpjClass = `${baseClass} ${
-    cnpjError ? "border-red-400" : "border-[#E6E6E6]"
-  }`;
+  const cnpjClass = `${baseClass} ${cnpjError ? "border-red-400" : "border-[#E6E6E6]"
+    }`;
 
   const headerTitle = title || "Enviar novo documento";
 
@@ -171,6 +166,11 @@ export function DocumentUploadForm({
 
       {/* File input — always visible */}
       <div className="md:col-span-2">
+        {hasExistingFile ? (
+          <div className="text-xs font-inter text-[#6B7280] mb-1">
+            Substituir arquivo atual
+          </div>
+        ) : null}
         <input
           type="file"
           accept="image/png,image/jpeg,image/webp,application/pdf"
@@ -211,11 +211,10 @@ export function DocumentUploadForm({
       {/* AI message (success or error) */}
       {!extracting && aiMessage ? (
         <div
-          className={`md:col-span-2 rounded-lg p-3 text-xs font-inter ${
-            aiMessageType === "error"
-              ? "bg-red-50 border border-red-200 text-red-700"
-              : "bg-green-50 border border-green-200 text-green-700"
-          }`}
+          className={`md:col-span-2 rounded-lg p-3 text-xs font-inter ${aiMessageType === "error"
+            ? "bg-red-50 border border-red-200 text-red-700"
+            : "bg-green-50 border border-green-200 text-green-700"
+            }`}
         >
           {aiMessage}
         </div>

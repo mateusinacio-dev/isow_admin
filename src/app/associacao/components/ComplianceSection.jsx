@@ -138,11 +138,18 @@ export function ComplianceSection({
   const ensureUploaded = async (fileOverride) => {
     const targetFile = fileOverride || docFile;
 
-    // If we have a cached upload and it's for the same file reference, reuse it
+    // Se há um cache do upload atual, reutilize
     if (uploadedFile?.url && !fileOverride) {
       return uploadedFile;
     }
+    // Sem novo arquivo: reutiliza o documento existente (só atualiza metadados)
     if (!targetFile) {
+      const existingUrl = activeComplianceItem?.fileUrl;
+      if (existingUrl) {
+        const ext = existingUrl.split('?')[0].split('.').pop().toLowerCase();
+        const mimeByExt = { pdf: 'application/pdf', png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', webp: 'image/webp' };
+        return { url: existingUrl, mimeType: mimeByExt[ext] || 'application/octet-stream' };
+      }
       return null;
     }
     const uploaded = await upload({ file: targetFile, name: docForm.docType || undefined });
@@ -308,8 +315,13 @@ export function ComplianceSection({
     setSuccess(null);
     setShowDocValidation(true);
 
-    if (!docFile || !docForm.docType) {
-      setError("Selecione o tipo e o arquivo.");
+    const hasExisting = Boolean(activeComplianceItem?.fileUrl);
+    if (!docForm.docType) {
+      setError("Selecione o tipo do documento.");
+      return;
+    }
+    if (!docFile && !hasExisting) {
+      setError("Selecione o arquivo do documento.");
       return;
     }
 
@@ -379,7 +391,6 @@ export function ComplianceSection({
     setDocFile(null);
     setUploadedFile(null);
     setExtractedMeta(null);
-    setFieldsRevealed(false);
     setAiMessage(null);
     setAiMessageType("info");
     aiValuesRef.current = {};
@@ -387,16 +398,21 @@ export function ComplianceSection({
 
     setActiveComplianceItem(item || null);
 
+    // Se já existe documento enviado, pré-preencher campos com dados existentes
+    const hasExisting = Boolean(item?.fileUrl);
+    setFieldsRevealed(hasExisting);
+
+    const meta = item?.meta || {};
     setDocForm((p) => ({
       ...p,
       docType: item?.type || "",
       description: item?.label || p.description,
-      expiresAt: "",
-      issuedAt: "",
-      registeredAt: "",
-      mandateEndsAt: "",
-      fiscalYear: "",
-      cnpj: "",
+      expiresAt: item?.expiresAt || "",
+      issuedAt: item?.issuedAt || "",
+      registeredAt: item?.registeredAt || "",
+      mandateEndsAt: meta.mandateEndsAt ? String(meta.mandateEndsAt).slice(0, 10) : "",
+      fiscalYear: meta.year ? String(meta.year) : "",
+      cnpj: meta.cnpj || "",
     }));
 
     setDocPopupOpen(true);
@@ -471,20 +487,28 @@ export function ComplianceSection({
             </div>
 
             {activeComplianceItem?.fileUrl ? (
-              <div className="mt-3 flex items-center justify-between gap-2 bg-[#F9FAFB] border border-[#E6E6E6] rounded-lg p-3">
-                <div className="text-xs font-inter text-[#374151] min-w-0">
-                  Documento atual:{" "}
-                  <a
-                    href={activeComplianceItem.fileUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="underline text-[#111827]"
-                  >
-                    abrir
-                  </a>
-                </div>
-                <div className="text-[11px] font-inter text-[#6B7280]">
-                  Se precisar corrigir, envie novamente.
+              <div className="mt-3 flex items-start gap-3 bg-blue-50 border border-blue-200 rounded-lg p-3">
+                <svg className="shrink-0 mt-0.5 h-4 w-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <div className="flex-1 min-w-0">
+                  <div className="text-xs font-semibold font-inter text-blue-800">
+                    Arquivo já enviado
+                  </div>
+                  <div className="text-xs font-inter text-blue-700 mt-0.5">
+                    Os campos abaixo foram preenchidos com os dados do envio anterior.{" "}
+                    <a
+                      href={activeComplianceItem.fileUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="underline font-medium"
+                    >
+                      Ver arquivo atual
+                    </a>
+                  </div>
+                  <div className="text-[11px] font-inter text-blue-600 mt-1">
+                    Para atualizar, escolha um novo arquivo — os campos serão preenchidos automaticamente pela IA.
+                  </div>
                 </div>
               </div>
             ) : null}
@@ -511,6 +535,7 @@ export function ComplianceSection({
                 fieldsRevealed={fieldsRevealed}
                 aiMessage={aiMessage}
                 aiMessageType={aiMessageType}
+                hasExistingFile={Boolean(activeComplianceItem?.fileUrl)}
               />
             </div>
           </div>
