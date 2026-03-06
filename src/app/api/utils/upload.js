@@ -21,7 +21,7 @@ async function upload({
     throw new Error("No data provided");
   }
 
-  const blob = await put(`upload-${Date.now()}`, fileData, { access: 'public', contentType });
+  const blob = await put(`upload-${Date.now()}`, fileData, { access: 'public', contentType, addRandomSuffix: true });
 
   return {
     url: blob.url,

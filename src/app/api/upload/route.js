@@ -13,7 +13,8 @@ export async function POST(request) {
                 return Response.json({ error: "No file provided" }, { status: 400 });
             }
 
-            const blob = await put(file.name, file, { access: 'public' });
+            const blobName = formData.get("name") || file.name || `upload-${Date.now()}`;
+            const blob = await put(blobName, file, { access: 'public', addRandomSuffix: true });
             return Response.json({ url: blob.url, mimeType: file.type });
         }
 
@@ -23,7 +24,8 @@ export async function POST(request) {
 
             if (body.base64) {
                 const buffer = Buffer.from(body.base64, "base64");
-                const blob = await put(`upload-${Date.now()}`, buffer, { access: 'public' });
+                const blobName = body.name || `upload-${Date.now()}`;
+                const blob = await put(blobName, buffer, { access: 'public', addRandomSuffix: true });
                 return Response.json({ url: blob.url, mimeType: 'application/octet-stream' });
             }
 
@@ -33,7 +35,8 @@ export async function POST(request) {
 
                 const arrayBuffer = await res.arrayBuffer();
                 const mime = res.headers.get('content-type') || 'application/octet-stream';
-                const blob = await put(`upload-${Date.now()}`, Buffer.from(arrayBuffer), { access: 'public', contentType: mime });
+                const blobName = body.name || `upload-${Date.now()}`;
+                const blob = await put(blobName, Buffer.from(arrayBuffer), { access: 'public', contentType: mime, addRandomSuffix: true });
                 return Response.json({ url: blob.url, mimeType: mime });
             }
 
@@ -43,7 +46,7 @@ export async function POST(request) {
         // 3. Upload raw octet-stream
         const arrayBuffer = await request.arrayBuffer();
         if (arrayBuffer.byteLength > 0) {
-            const blob = await put(`upload-${Date.now()}`, Buffer.from(arrayBuffer), { access: 'public' });
+            const blob = await put(`upload-${Date.now()}`, Buffer.from(arrayBuffer), { access: 'public', addRandomSuffix: true });
             return Response.json({ url: blob.url, mimeType: "application/octet-stream" });
         }
 

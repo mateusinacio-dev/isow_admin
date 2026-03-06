@@ -145,7 +145,7 @@ export function ComplianceSection({
     if (!targetFile) {
       return null;
     }
-    const uploaded = await upload({ file: targetFile });
+    const uploaded = await upload({ file: targetFile, name: docForm.docType || undefined });
     if (uploaded?.error) {
       setError(uploaded.error);
       return null;

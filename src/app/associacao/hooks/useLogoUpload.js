@@ -26,7 +26,7 @@ export function useLogoUpload(setForm, setError) {
 
       setError(null);
 
-      const uploaded = await upload({ base64 });
+      const uploaded = await upload({ base64, name: 'logo' });
       if (uploaded?.error) {
         setError(uploaded.error);
         return;
