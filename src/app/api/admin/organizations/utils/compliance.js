@@ -149,6 +149,10 @@ export function computeComplianceSummary({ organization, documents, now }) {
         doc?.meta?.mandateEndsAt || doc?.meta?.mandateEnds || null;
       const mandateDateISO = toDateOnlyISO(mandate);
       item.expiresAt = mandateDateISO;
+      if (!mandateDateISO) {
+        item.warnings.push("Data de vencimento do mandato não informada. Atualize a ata.");
+        item.status = "WARNING";
+      }
     } else if (req.type === COMPLIANCE_DOC_TYPES.FINANCIAL_STATEMENTS) {
       const currentYear = nowDate.getFullYear();
       const requiredYear = currentYear - 1;
@@ -193,16 +197,27 @@ export function computeComplianceSummary({ organization, documents, now }) {
       }
     }
 
-    // Expiration status
+    // Documentos sem data de vencimento
     if (!item.expiresAt) {
-      // some docs do not expire (statute/constitution), so OK.
-      if (
-        req.type === COMPLIANCE_DOC_TYPES.STATUTE ||
-        req.type === COMPLIANCE_DOC_TYPES.CONSTITUTION_MINUTES
-      ) {
-        item.status = item.warnings.length ? "WARNING" : "OK";
-      } else if (item.status === "MISSING") {
-        item.status = "OK";
+      const NO_EXPIRY_TYPES = [
+        COMPLIANCE_DOC_TYPES.STATUTE,
+        COMPLIANCE_DOC_TYPES.CONSTITUTION_MINUTES,
+        COMPLIANCE_DOC_TYPES.CNPJ_CARD,
+        COMPLIANCE_DOC_TYPES.ELECTION_MINUTES, // sem mandato = sem vencimento
+      ];
+
+      if (NO_EXPIRY_TYPES.includes(req.type)) {
+        // Se há warnings (ex: CNPJ mismatch, mandato não informado), mantém WARNING
+        // Caso contrário, documento enviado sem vencimento = OK
+        if (item.status !== "WARNING") {
+          item.status = "OK";
+        }
+      } else {
+        // Outros tipos sem expiresAt (ex: certidão enviada sem data): OK por ora
+        // (o usuário precisará informar a data na próxima atualização)
+        if (item.status === "MISSING") {
+          item.status = "OK";
+        }
       }
       return item;
     }
