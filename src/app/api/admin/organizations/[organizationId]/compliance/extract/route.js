@@ -1,43 +1,36 @@
 import { COMPLIANCE_DOC_TYPES } from "@/app/api/admin/organizations/utils/compliance";
 
+const GEMINI_MODEL = "gemini-2.5-flash";
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
 function normalizeDocType(docType) {
-  return String(docType || "")
-    .trim()
-    .toUpperCase();
+  return String(docType || "").trim().toUpperCase();
 }
 
 function isSupportedDocType(docType) {
-  const dt = normalizeDocType(docType);
-  return Object.values(COMPLIANCE_DOC_TYPES).includes(dt);
+  return Object.values(COMPLIANCE_DOC_TYPES).includes(normalizeDocType(docType));
 }
 
 function extractFirstJsonObject(text) {
-  if (!text) {
-    return null;
-  }
+  if (!text) return null;
   const start = text.indexOf("{");
   const end = text.lastIndexOf("}");
-  if (start === -1 || end === -1 || end <= start) {
-    return null;
-  }
-  const slice = text.slice(start, end + 1);
+  if (start === -1 || end === -1 || end <= start) return null;
   try {
-    return JSON.parse(slice);
+    return JSON.parse(text.slice(start, end + 1));
   } catch (e) {
     console.error("Could not parse JSON from AI output", e);
     return null;
   }
 }
 
-function toDataUrl(contentType, base64) {
-  const safeType = contentType || "image/jpeg";
-  return `data:${safeType};base64,${base64}`;
-}
+// ─── Prompts ──────────────────────────────────────────────────────────────────
 
 const SYSTEM_PROMPT =
   "Você é um assistente especializado em documentos institucionais e certidões brasileiras de ONGs/associações. Sua tarefa é extrair dados estruturados. Responda SOMENTE com JSON válido, sem markdown, sem texto extra. Use datas no formato YYYY-MM-DD. Se não encontrar um campo, use null. Nunca invente dados.";
 
-function buildUserPrompt(docType, contentSuffix) {
+function buildUserPrompt(docType) {
   return `Analise este documento do tipo ${docType} de uma associação/ONG brasileira.
 Extraia os dados e retorne SOMENTE este JSON:
 {
@@ -61,97 +54,70 @@ Regras por tipo de documento:
 - ELECTION_MINUTES (Ata de eleição da diretoria): Extraia mandateEndsAt (quando termina o mandato eleito), registeredAt (registro em cartório). Se o documento mencionar um período (ex: '2024-2028'), calcule mandateEndsAt como o último dia do último ano.
 - STATUTE (Estatuto): Extraia registeredAt (data de registro em cartório). Sem vencimento.
 - CONSTITUTION_MINUTES (Ata de constituição): Extraia registeredAt e foundingDate. Sem vencimento.
-- FINANCIAL_STATEMENTS (Demonstrações contábeis): Extraia fiscalYear, totalRevenue, totalExpenses, netResult. Estas informações são usadas para gerar um perfil financeiro da organização.
-Se a informação estiver ambígua ou ilegível, use null e explique brevemente em notes.
-${contentSuffix}`;
+- FINANCIAL_STATEMENTS (Demonstrações contábeis): Extraia fiscalYear, totalRevenue, totalExpenses, netResult.
+Se a informação estiver ambígua ou ilegível, use null e explique brevemente em notes.`;
 }
 
-// Shared: call Gemini 2.5 Flash with a base64 data URL
-async function callGeminiFlash(dataUrl, docType) {
-  const userPrompt = buildUserPrompt(docType, "");
+// ─── Chamada ao Gemini ────────────────────────────────────────────────────────
 
-  const messages = [
-    {
-      role: "user",
-      content: [
-        { type: "text", text: SYSTEM_PROMPT + "\n\n" + userPrompt },
-        { type: "image_url", image_url: { url: dataUrl } },
-      ],
+async function callGemini(base64Content, mimeType, docType) {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    throw new Error("GEMINI_API_KEY não configurada nas variáveis de ambiente.");
+  }
+
+  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${apiKey}`;
+
+  const payload = {
+    contents: [
+      {
+        parts: [
+          { text: SYSTEM_PROMPT + "\n\n" + buildUserPrompt(docType) },
+          { inline_data: { mime_type: mimeType, data: base64Content } },
+        ],
+      },
+    ],
+    generationConfig: {
+      temperature: 0,
+      maxOutputTokens: 1024,
     },
-  ];
+  };
 
-  const aiResp = await fetch("/integrations/google-gemini-2-5-flash/", {
+  const aiResp = await fetch(endpoint, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ messages: JSON.stringify(messages) }),
+    body: JSON.stringify(payload),
   });
 
   if (!aiResp.ok) {
+    const err = await aiResp.json().catch(() => ({}));
     throw new Error(
-      `AI extraction failed. Response [${aiResp.status}] ${aiResp.statusText}`,
+      `Gemini API error [${aiResp.status}]: ${err?.error?.message || aiResp.statusText}`
     );
   }
 
   const aiJson = await aiResp.json();
-  // Handle Gemini response format (candidates) with fallback to OpenAI format (choices)
-  return (
-    aiJson?.candidates?.[0]?.content?.parts?.[0]?.text ||
-    aiJson?.choices?.[0]?.message?.content ||
-    ""
-  );
+  return aiJson?.candidates?.[0]?.content?.parts?.[0]?.text || "";
 }
 
-async function extractFromImage(fileUrl, mimeType, docType) {
+// ─── Extração por tipo de arquivo ────────────────────────────────────────────
+
+async function extractFromFile(fileUrl, mimeType, docType) {
   const resp = await fetch(fileUrl);
   if (!resp.ok) {
     throw new Error(
-      `Could not fetch fileUrl. Response [${resp.status}] ${resp.statusText}`,
+      `Could not fetch file. Response [${resp.status}] ${resp.statusText}`
     );
   }
 
-  const contentType = resp.headers.get("content-type") || mimeType || "";
   const arrayBuffer = await resp.arrayBuffer();
   const base64 = Buffer.from(arrayBuffer).toString("base64");
-  const dataUrl = toDataUrl(contentType, base64);
 
-  return await callGeminiFlash(dataUrl, docType);
+  // Gemini aceita PDF e imagens nativamente — sem conversão
+  return await callGemini(base64, mimeType, docType);
 }
 
-async function extractFromPdf(fileUrl, docType) {
-  // Step 1: Fetch the PDF file as binary
-  const pdfResp = await fetch(fileUrl);
-  if (!pdfResp.ok) {
-    throw new Error(
-      `Could not fetch PDF. Response [${pdfResp.status}] ${pdfResp.statusText}`,
-    );
-  }
-  const pdfBuffer = await pdfResp.arrayBuffer();
-  const pdfBlob = new Blob([pdfBuffer], { type: "application/pdf" });
-
-  // Step 2: Convert PDF → PNG using File Converter
-  const formData = new FormData();
-  formData.append("inputFile", pdfBlob, "document.pdf");
-  formData.append("outputType", "png");
-
-  const converterResp = await fetch("/integrations/file-converter/convert", {
-    method: "POST",
-    body: formData,
-  });
-
-  if (!converterResp.ok) {
-    throw new Error(
-      `PDF to image conversion failed. Response [${converterResp.status}] ${converterResp.statusText}`,
-    );
-  }
-
-  // Step 3: Build base64 data URL from PNG bytes
-  const pngBuffer = await converterResp.arrayBuffer();
-  const base64 = Buffer.from(pngBuffer).toString("base64");
-  const dataUrl = `data:image/png;base64,${base64}`;
-
-  // Step 4: Send to Gemini 2.5 Flash — same path as image extraction
-  return await callGeminiFlash(dataUrl, docType);
-}
+// ─── Route Handler ────────────────────────────────────────────────────────────
 
 export async function POST(request, { params: { organizationId } }) {
   try {
@@ -162,20 +128,14 @@ export async function POST(request, { params: { organizationId } }) {
     const docType = normalizeDocType(body?.docType);
 
     if (!organizationId) {
-      return Response.json(
-        { error: "organizationId is required" },
-        { status: 400 },
-      );
+      return Response.json({ error: "organizationId is required" }, { status: 400 });
     }
-
     if (!fileUrl) {
       return Response.json({ error: "fileUrl is required" }, { status: 400 });
     }
-
     if (!docType) {
       return Response.json({ error: "docType is required" }, { status: 400 });
     }
-
     if (!isSupportedDocType(docType)) {
       return Response.json({ error: "Unsupported docType" }, { status: 400 });
     }
@@ -185,22 +145,12 @@ export async function POST(request, { params: { organizationId } }) {
 
     if (!isImage && !isPdf) {
       return Response.json(
-        {
-          error:
-            "Formato não suportado. Envie uma imagem (PNG/JPG/WEBP) ou um PDF.",
-        },
-        { status: 400 },
+        { error: "Formato não suportado. Envie uma imagem (PNG/JPG/WEBP) ou um PDF." },
+        { status: 400 }
       );
     }
 
-    let content = "";
-
-    if (isPdf) {
-      content = await extractFromPdf(fileUrl, docType);
-    } else {
-      content = await extractFromImage(fileUrl, mimeType, docType);
-    }
-
+    const content = await extractFromFile(fileUrl, mimeType, docType);
     const extracted = extractFirstJsonObject(content);
 
     if (!extracted) {
@@ -210,7 +160,7 @@ export async function POST(request, { params: { organizationId } }) {
             "Não consegui ler os dados desse arquivo. Tente enviar uma imagem mais nítida ou um PDF com texto selecionável, ou preencha manualmente.",
           raw: content,
         },
-        { status: 422 },
+        { status: 422 }
       );
     }
 
