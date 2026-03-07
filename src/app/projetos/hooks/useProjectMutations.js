@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   createProject,
   deleteProject,
+  publishProject,
   startProjectExecution,
   updateProject,
 } from "../services/projectApi";
@@ -14,19 +15,26 @@ export default function useProjectMutations({
   onCreated,
   onSaved,
   onDeleted,
+  onPublished,
   setError,
   setSuccess,
 }) {
   const queryClient = useQueryClient();
 
+  const invalidateProjects = () =>
+    queryClient.invalidateQueries({
+      queryKey: ["admin", "org", organizationId, "projects"],
+    });
+
+  const invalidateProject = () =>
+    queryClient.invalidateQueries({
+      queryKey: ["admin", "org", organizationId, "project", projectId],
+    });
+
   const createMutation = useMutation({
-    mutationFn: async () => {
-      return createProject(organizationId, payload());
-    },
+    mutationFn: async () => createProject(organizationId, payload()),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({
-        queryKey: ["admin", "org", organizationId, "projects"],
-      });
+      invalidateProjects();
       setSuccess?.("Projeto criado.");
       onCreated?.(data?.projectId);
     },
@@ -37,16 +45,10 @@ export default function useProjectMutations({
   });
 
   const updateMutation = useMutation({
-    mutationFn: async () => {
-      return updateProject(organizationId, projectId, payload());
-    },
+    mutationFn: async () => updateProject(organizationId, projectId, payload()),
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["admin", "org", organizationId, "projects"],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["admin", "org", organizationId, "project", projectId],
-      });
+      invalidateProjects();
+      invalidateProject();
       setSuccess?.("Alterações salvas.");
       onSaved?.();
     },
@@ -56,14 +58,25 @@ export default function useProjectMutations({
     },
   });
 
-  const deleteMutation = useMutation({
-    mutationFn: async () => {
-      return deleteProject(organizationId, projectId);
+  const publishMutation = useMutation({
+    mutationFn: async () => publishProject(organizationId, projectId),
+    onSuccess: async () => {
+      setError?.(null);
+      await invalidateProjects();
+      await invalidateProject();
+      onPublished?.();
     },
+    onError: (error) => {
+      console.error(error);
+      setError?.("Não foi possível publicar o projeto. Tente novamente.");
+      setSuccess?.(null);
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async () => deleteProject(organizationId, projectId),
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["admin", "org", organizationId, "projects"],
-      });
+      invalidateProjects();
       setSuccess?.("Projeto excluído.");
       onDeleted?.();
     },
@@ -74,13 +87,9 @@ export default function useProjectMutations({
   });
 
   const startExecutionMutation = useMutation({
-    mutationFn: async () => {
-      return startProjectExecution(organizationId, projectId);
-    },
+    mutationFn: async () => startProjectExecution(organizationId, projectId),
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["admin", "org", organizationId, "project", projectId],
-      });
+      invalidateProject();
       setSuccess?.("Execução iniciada.");
     },
     onError: (error) => {
@@ -96,8 +105,10 @@ export default function useProjectMutations({
   return {
     createMutation,
     updateMutation,
+    publishMutation,
     deleteMutation,
     startExecutionMutation,
     saving,
+    publishing: publishMutation.isPending,
   };
 }

@@ -34,6 +34,7 @@ export default function ProjectForm({
   onCreated,
   onSaved,
   onDeleted,
+  onPublished,
 }) {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
@@ -114,12 +115,19 @@ export default function ProjectForm({
     return p;
   }, [mode, state]);
 
+  const canPublish = useMemo(() => {
+    const s = String(initialProject?.status || "").toUpperCase();
+    return s === "DRAFT" || s === "";
+  }, [initialProject?.status]);
+
   const {
     createMutation,
     updateMutation,
+    publishMutation,
     deleteMutation,
     startExecutionMutation,
     saving,
+    publishing,
   } = useProjectMutations({
     organizationId,
     mode,
@@ -128,9 +136,16 @@ export default function ProjectForm({
     onCreated,
     onSaved,
     onDeleted,
+    onPublished,
     setError,
     setSuccess,
   });
+
+  const handlePublish = useCallback(() => {
+    setError(null);
+    setSuccess(null);
+    publishMutation.mutate();
+  }, [publishMutation]);
 
   const handleSave = useCallback(() => {
     setError(null);
@@ -213,11 +228,14 @@ export default function ProjectForm({
           mode={mode}
           submitting={submitting}
           canStartExecution={canStartExecution}
+          canPublish={canPublish}
           onSave={handleSave}
           onDelete={handleDelete}
+          onPublish={handlePublish}
           onStartExecution={handleStartExecution}
           startExecutionPending={startExecutionMutation.isPending}
           deletePending={deleteMutation.isPending}
+          publishing={publishing}
         />
 
         <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">

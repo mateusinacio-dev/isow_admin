@@ -60,6 +60,28 @@ export async function updateProject(organizationId, projectId, payload) {
   return response.json();
 }
 
+export async function publishProject(organizationId, projectId) {
+  const response = await fetch(
+    `/api/admin/organizations/${organizationId}/projects/${projectId}`,
+    {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        status: "PUBLISHED",
+        publishingDate: new Date().toISOString(),
+      }),
+    },
+  );
+  if (!response.ok) {
+    const body = await response.json().catch(() => ({}));
+    const msg = body?.error || response.statusText;
+    throw new Error(
+      `When publishing /api/admin/organizations/${organizationId}/projects/${projectId}, the response was [${response.status}] ${msg}`,
+    );
+  }
+  return response.json();
+}
+
 export async function deleteProject(organizationId, projectId) {
   const response = await fetch(
     `/api/admin/organizations/${organizationId}/projects/${projectId}`,
