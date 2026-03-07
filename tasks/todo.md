@@ -1,7 +1,7 @@
-# Plano de Implementação: Fase 1 (Upload Próprio)
+# Plano de Ação - Correção de Erro no Vercel
 
-- [x] Instalar pacote `@vercel/blob`
-- [x] Criar nova rota `app/api/upload/route.js`
-- [x] Atualizar hook local `src/utils/useUpload.js` para usar a rota nova
-- [x] Atualizar função servidor `src/app/api/utils/upload.js` para usar a rota nova
-- [x] (Aguardar) Informar usuário para configurar token `BLOB_READ_WRITE_TOKEN` no Vercel
+- [x] Obter o último erro do Vercel usando CLI ou MCP
+- [/] Analisar a causa raiz do problema relatado nos logs
+- [ ] Implementar a correção necessária no código
+- [ ] Validar a correção (verificar se o build/rodar localmente funciona)
+- [ ] Adicionar resumo da revisão e atualizar lessons aprendidas (se necessário)

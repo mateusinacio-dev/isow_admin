@@ -369,7 +369,9 @@ export function ComplianceSection({
       meta,
     };
 
-    docsMutation.mutate({ payload });
+    docsMutation.mutate({ payload }, {
+      onSuccess: () => setDocPopupOpen(false),
+    });
 
     setDocFile(null);
     setUploadedFile(null);

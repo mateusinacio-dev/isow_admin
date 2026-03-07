@@ -55,11 +55,9 @@ export function DocumentUploadForm({
 
   const submitDisabled = isPending || uploading || extracting || !submitReady;
 
-  const submitClassBase =
-    "h-10 px-4 rounded-lg bg-black text-white text-sm font-inter hover:bg-black/90 disabled:opacity-60";
   const submitClass = submitReady
-    ? submitClassBase
-    : `${submitClassBase} opacity-60`;
+    ? "h-10 px-4 rounded-lg bg-emerald-600 text-white text-sm font-inter hover:bg-emerald-700 transition-colors"
+    : "h-10 px-4 rounded-lg bg-black/30 text-white text-sm font-inter opacity-60 cursor-not-allowed";
 
   const docTypeError = showValidation ? fieldErrors?.docType : null;
   const expiresAtError = showValidation ? fieldErrors?.expiresAt : null;
