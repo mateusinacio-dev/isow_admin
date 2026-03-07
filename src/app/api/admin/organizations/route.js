@@ -122,9 +122,9 @@ export async function POST(request) {
           'ONG',
           ${hashtag},
           ${JSON.stringify({
-            contact: { email: creatorEmail },
-            admins: creatorEmail ? [{ emailOrName: creatorEmail }] : [],
-          })}::jsonb
+        contact: { email: creatorEmail },
+        admins: creatorEmail ? [{ emailOrName: creatorEmail }] : [],
+      })}::jsonb
         )
         RETURNING
           "organizationId",

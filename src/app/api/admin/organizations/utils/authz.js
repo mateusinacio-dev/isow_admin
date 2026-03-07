@@ -26,49 +26,51 @@ async function linkUserToOrganizationsByAdminEmail({ isowUserId, email }) {
   }
 
   // 1) Re-activate soft-deleted memberships when the email is listed as an admin.
-  await sql`
-    UPDATE public."OrganizationUser" ou
-    SET
-      "deletedAt" = NULL,
-      "accessRole" = 'ADMIN',
-      "updatedAt" = CURRENT_TIMESTAMP
-    WHERE ou."userId" = ${isowUserId}
-      AND ou."deletedAt" IS NOT NULL
-      AND EXISTS (
-        SELECT 1
-        FROM public."Organization" o
-        WHERE o."organizationId" = ou."organizationId"
-          AND o."deletedAt" IS NULL
-          AND EXISTS (
-            SELECT 1
-            FROM jsonb_array_elements(COALESCE(o."adminConfig"->'admins', '[]'::jsonb)) a
-            WHERE LOWER(a->>'emailOrName') = LOWER(${email})
-          )
-      )
-  `;
+  await sql(
+    `UPDATE public."OrganizationUser" ou
+     SET
+       "deletedAt" = NULL,
+       "accessRole" = $3,
+       "updatedAt" = CURRENT_TIMESTAMP
+     WHERE ou."userId" = $1
+       AND ou."deletedAt" IS NOT NULL
+       AND EXISTS (
+         SELECT 1
+         FROM public."Organization" o
+         WHERE o."organizationId" = ou."organizationId"
+           AND o."deletedAt" IS NULL
+           AND EXISTS (
+             SELECT 1
+             FROM jsonb_array_elements(COALESCE(o."adminConfig"->'admins', '[]'::jsonb)) a
+             WHERE LOWER(a->>'emailOrName') = LOWER($2)
+           )
+       )`,
+    [isowUserId, email, 'ADMIN'],
+  );
 
   // 2) Create new memberships when the email is listed as an admin.
-  await sql`
-    INSERT INTO public."OrganizationUser" ("organizationId", "userId", "accessRole")
-    SELECT
-      o."organizationId",
-      ${isowUserId},
-      'ADMIN'
-    FROM public."Organization" o
-    WHERE o."deletedAt" IS NULL
-      AND EXISTS (
-        SELECT 1
-        FROM jsonb_array_elements(COALESCE(o."adminConfig"->'admins', '[]'::jsonb)) a
-        WHERE LOWER(a->>'emailOrName') = LOWER(${email})
-      )
-      AND NOT EXISTS (
-        SELECT 1
-        FROM public."OrganizationUser" ou
-        WHERE ou."organizationId" = o."organizationId"
-          AND ou."userId" = ${isowUserId}
-          AND ou."deletedAt" IS NULL
-      )
-  `;
+  await sql(
+    `INSERT INTO public."OrganizationUser" ("organizationId", "userId", "accessRole")
+     SELECT
+       o."organizationId",
+       $1,
+       $3
+     FROM public."Organization" o
+     WHERE o."deletedAt" IS NULL
+       AND EXISTS (
+         SELECT 1
+         FROM jsonb_array_elements(COALESCE(o."adminConfig"->'admins', '[]'::jsonb)) a
+         WHERE LOWER(a->>'emailOrName') = LOWER($2)
+       )
+       AND NOT EXISTS (
+         SELECT 1
+         FROM public."OrganizationUser" ou
+         WHERE ou."organizationId" = o."organizationId"
+           AND ou."userId" = $1
+           AND ou."deletedAt" IS NULL
+       )`,
+    [isowUserId, email, 'ADMIN'],
+  );
 }
 
 export async function requireSession() {
@@ -117,15 +119,16 @@ export async function ensureIsowUser(session) {
       const needsProviderSync = !hasAnythingProvider;
 
       if (needsBasicSync || needsProviderSync) {
-        await sql`
-          UPDATE public."User" u
-          SET
-            email = COALESCE(${email}, u.email),
-            "fullName" = COALESCE(${name}, u."fullName"),
-            "signInProvider" = 'ANYTHING',
-            "updatedAt" = CURRENT_TIMESTAMP
-          WHERE u."userId" = ${existing.userId}
-        `;
+        await sql(
+          `UPDATE public."User" u
+           SET
+             email = COALESCE($1, u.email),
+             "fullName" = COALESCE($2, u."fullName"),
+             "signInProvider" = $4,
+             "updatedAt" = CURRENT_TIMESTAMP
+           WHERE u."userId" = $3`,
+          [email, name, existing.userId, '{ANYTHING}'],
+        );
       }
 
       // If the org has stored this email in "admins", automatically grant access.
@@ -138,8 +141,8 @@ export async function ensureIsowUser(session) {
     }
 
     const token = randomToken();
-    const [created] = await sql`
-      INSERT INTO public."User" (
+    const [created] = await sql(
+      `INSERT INTO public."User" (
         "userAuthId",
         "accessStatus",
         "fullName",
@@ -147,15 +150,16 @@ export async function ensureIsowUser(session) {
         "sharingToken",
         "signInProvider"
       ) VALUES (
-        ${authId},
-        'ACTIVE',
-        ${name},
-        ${email},
-        ${token},
-        'ANYTHING'
+        $1,
+        $5,
+        $2,
+        $3,
+        $4,
+        $6
       )
-      RETURNING "userId", "userAuthId", email, "fullName", "signInProvider"
-    `;
+      RETURNING "userId", "userAuthId", email, "fullName", "signInProvider"`,
+      [authId, name, email, token, 'ACTIVE', '{ANYTHING}'],
+    );
 
     if (created?.userId) {
       await linkUserToOrganizationsByAdminEmail({
